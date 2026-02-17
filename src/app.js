@@ -1,6 +1,11 @@
 const express = require("express");
 const connectionDB = require("./config/database");
+const userRouter = require("./routes/userRouter");
+
 const app = express();
+
+app.use("/", express.json());
+app.use("/", userRouter);
 
 connectionDB()
   .then(() => {
