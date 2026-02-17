@@ -4,8 +4,10 @@ const validateAndSanitizeSignUp = (req) => {
   if (!firstName || !emailId || !password) {
     throw new Error("pls fill all the credentials");
   }
-  if (firstName.length < 4) {
-    throw new Error("firstName must greater than 4 characters");
+  if (firstName.length < 4 && firstName.length > 20) {
+    throw new Error(
+      "firstName must greater than 4 characters and lesser than 20 character",
+    );
   } else if (!validate.isEmail(emailId)) {
     throw new Error("pls enter valid email ");
   } else if (!validate.isStrongPassword(password)) {
@@ -14,7 +16,7 @@ const validateAndSanitizeSignUp = (req) => {
     );
   } else if (!["user", "worker"].includes(role)) {
     throw new Error("invalid role . Please enter the valid role");
-  }
+  } 
 };
 
 module.exports = validateAndSanitizeSignUp;
