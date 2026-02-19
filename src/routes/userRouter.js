@@ -3,6 +3,7 @@ const validateAndSanitizeSignUp = require("../utils/validation");
 const bcrypt = require("bcrypt");
 const User = require("../model/user");
 const jwt = require("jsonwebtoken");
+const userAuth = require("../middleware/userAuth");
 
 const userRouter = express.Router();
 
