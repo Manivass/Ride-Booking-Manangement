@@ -6,3 +6,6 @@
     - create login api
     - create userAuth middleware
     - create ride model
+    - create ride/request api
+    - create ride/mytrip api
+    - create ride/id/cancel api
