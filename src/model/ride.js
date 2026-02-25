@@ -35,6 +35,9 @@ const rideSchema = new mongoose.Schema(
       },
       default: "pending",
     },
+    driverId: {
+      type: mongoose.Schema.Types.ObjectId,
+    },
   },
   {
     timestamps: true,

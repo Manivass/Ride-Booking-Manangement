@@ -14,7 +14,7 @@ const validateAndSanitizeSignUp = (req) => {
     throw new Error(
       "password must have seven characters, 1 Uppercase , 1 Symbol",
     );
-  } else if (!["user", "worker"].includes(role)) {
+  } else if (!["user", "driver"].includes(role)) {
     throw new Error("invalid role . Please enter the valid role");
   } 
 };
