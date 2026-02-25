@@ -13,6 +13,14 @@ const userSchema = new mongoose.Schema(
     lastName: {
       type: String,
       minLength: 1,
+      required: true,
+      minLength: 1,
+      maxLength: 15,
+      validate: function (value) {
+        if (value.length < 1 || value.length > 15) {
+          throw new Error("last name must have 1 to 15 characters");
+        }
+      },
     },
     emailId: {
       type: String,

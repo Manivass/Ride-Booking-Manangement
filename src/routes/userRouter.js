@@ -42,14 +42,14 @@ userRouter.post("/login", async (req, res) => {
     }
     const isUserAlreadyLogged = await User.findOne({ emailId });
     if (!isUserAlreadyLogged) {
-      return res.status(401).send("pls fill all the credentials");
+      return res.status(401).send("invalid credentials");
     }
     const isPasswordCorrect = await bcrypt.compare(
       password,
       isUserAlreadyLogged.password,
     );
     if (!isPasswordCorrect) {
-      return res.status(401).send("pls fill all the credentials");
+      return res.status(401).send("invalid credentials");
     }
     const token = await isUserAlreadyLogged.getJWT();
     res.cookie("token", token, {
@@ -58,6 +58,18 @@ userRouter.post("/login", async (req, res) => {
     res.status(200).json({ message: "successfully logged in" });
   } catch (err) {
     res.status(400).send(err.message);
+  }
+});
+
+userRouter.get("/profile", userAuth, async (req, res) => {
+  try {
+    const loggedUser = req.user;
+    const profile = await User.findById(loggedUser._id).select(
+      "firstName lastName emailId role",
+    );
+    res.status(200).json({ data: profile });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 

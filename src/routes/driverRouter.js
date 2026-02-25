@@ -8,21 +8,34 @@ driverRouter.patch("/ride/:id/accept", userAuth, async (req, res) => {
   try {
     const loggedUser = req.user;
     if (loggedUser.role !== "driver") {
-      return res.status(403).json({ message: "only driver can accept raid" });
+      return res.status(403).json({ message: "only driver can accept ride" });
     }
     const id = req.params.id;
-    const rideAvailable = await Ride.findById(id);
+    const rideAvailable = await Ride.findOneAndUpdate(
+      {
+        _id: id,
+        status: "pending",
+      },
+      {
+        status: "accepted",
+        driverId: loggedUser._id,
+      },
+      {
+        new: true,
+      },
+    );
     if (!rideAvailable) {
-      return res.status(404).json({ message: "no ride found" });
+      return res
+        .status(404)
+        .json({ message: "ride not available or already accepted" });
     }
-    if (rideAvailable.status !== "pending") {
-      return res.status(401).json({ message: "cannot accept the ride " });
-    }
-    rideAvailable.status = "accepted";
-    rideAvailable.driverId = loggedUser._id;
-    await rideAvailable.save();
-    res.status(200).json({ message: "ride accepted successfully" });
+    res
+      .status(200)
+      .json({ message: "ride accepted successfully", data: rideAvailable });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
 });
+
+
+module.exports = driverRouter;
