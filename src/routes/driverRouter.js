@@ -37,5 +37,32 @@ driverRouter.patch("/ride/:id/accept", userAuth, async (req, res) => {
   }
 });
 
+driverRouter.patch("/ride/:id/complete", userAuth, async (req, res) => {
+  try {
+    const loggedUser = req.user;
+    const id = req.params.id;
+    const isRideAvailable = await Ride.findById(id);
+    if (!isRideAvailable) {
+      return res.status(404).json({ message: "ride not found" });
+    }
+    if (!loggedUser._id.equals(isRideAvailable.driverId)) {
+      return res
+        .status(409)
+        .json({ message: "only accepted driver can complete the ride" });
+    }
+
+    if (isRideAvailable.status != "accepted") {
+      return res
+        .status(409)
+        .json({ message: "Ride must be accepted before completed" });
+    }
+
+    isRideAvailable.status = "completed";
+    await isRideAvailable.save();
+    res.status(200).json({ message: "ride completed successfully" });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+});
 
 module.exports = driverRouter;
