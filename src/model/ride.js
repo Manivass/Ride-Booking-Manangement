@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { SALEM_LOCATIONS } = require("../utils/constant");
+const { SALEM_LOCATIONS, STATUS_VALUES } = require("../utils/constant");
 
 const rideSchema = new mongoose.Schema(
   {
@@ -30,7 +30,7 @@ const rideSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: {
-        values: ["pending", "rejected", "accepted", "cancelled", "completed"],
+        values: STATUS_VALUES,
         message: `{VALUE} is not valid status`,
       },
       default: "pending",

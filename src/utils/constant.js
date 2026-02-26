@@ -41,4 +41,13 @@ const SALEM_LOCATIONS = [
   "Udayapatti",
 ].map((loc) => loc.toLowerCase());
 
-module.exports = { SALEM_LOCATIONS };
+const STATUS_VALUES = [
+  "pending",
+  "rejected",
+  "accepted",
+  "cancelled",
+  "completed",
+  "started",
+];
+
+module.exports = { SALEM_LOCATIONS, STATUS_VALUES };

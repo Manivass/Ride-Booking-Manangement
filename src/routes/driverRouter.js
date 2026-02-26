@@ -37,6 +37,35 @@ driverRouter.patch("/ride/:id/accept", userAuth, async (req, res) => {
   }
 });
 
+driverRouter.patch("/ride/:id/start", userAuth, async (req, res) => {
+  try {
+    const loggedUser = req.user;
+    const id = req.params.id;
+    const isRideAvailable = await Ride.findById(id);
+    if (loggedUser.role !== "driver") {
+      return res
+        .status(409)
+        .json({ message: "only driver can start the ride" });
+    }
+    if (!isRideAvailable) {
+      return res.status(404).json({ message: "ride not found" });
+    }
+    if (!isRideAvailable.driverId.equals(loggedUser._id)) {
+      return res
+        .status(409)
+        .json({ message: "only accepted driver can start the ride" });
+    }
+    if (isRideAvailable.status !== "accepted") {
+      return res.status(403).json({ message: "ride is not accepted" });
+    }
+    isRideAvailable.status = "started";
+    await isRideAvailable.save();
+    res.status(200).json({ message: "ride started successfully" });
+  } catch (err) {
+    res.status(400).json({ messsage: err.message });
+  }
+});
+
 driverRouter.patch("/ride/:id/complete", userAuth, async (req, res) => {
   try {
     const loggedUser = req.user;
@@ -51,7 +80,7 @@ driverRouter.patch("/ride/:id/complete", userAuth, async (req, res) => {
         .json({ message: "only accepted driver can complete the ride" });
     }
 
-    if (isRideAvailable.status != "accepted") {
+    if (isRideAvailable.status != "started") {
       return res
         .status(409)
         .json({ message: "Ride must be accepted before completed" });
